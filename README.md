@@ -15,7 +15,6 @@ Built using **SwiftUI**, **async/await**, **Charts**, and native iOS system APIs
 - Local notifications on service failures
 - PIN-based app security
 - Background/foreground–aware locking
-- Local-first, no backend required
 
 ---
 
