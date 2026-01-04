@@ -28,26 +28,19 @@ Built using **SwiftUI**, **async/await**, **Charts**, and native iOS system APIs
   <img width="250" alt="image" src="https://github.com/user-attachments/assets/8311507d-1860-479b-8b7f-ddd1b4246c70" />
 </p>
 
+## PIN Lock + PIN Set Up View
+<p align ="center">
+    <img width="250" alt="Simulator Screenshot - iPhone 17 Pro - 2026-01-04 at 08 38 29" src="https://github.com/user-attachments/assets/ccd0f9ff-dffc-4813-b6fb-989d4fce6f6b" />
+    <img width="250"  alt="image" src="https://github.com/user-attachments/assets/9fc1eeec-fb81-4368-a91b-0126101aa3ac" />
+    <img width="250" alt="image" src="https://github.com/user-attachments/assets/bbc37d05-f979-411e-8db4-6fd451fba05e" />
+</p>
+
 ## Edit + Notification View
 <p align="center">
   <img width="250"  alt="image" src="https://github.com/user-attachments/assets/e553825c-8497-41e2-8865-5167a2ebab79" />
   <img width="250" alt="image" src="https://github.com/user-attachments/assets/2c8a50c6-fb7a-4fe4-abca-11db7a4874d2" />
   <img width="250" alt="image" src="https://github.com/user-attachments/assets/1dfcf511-4123-48dc-837d-587bb9c7cb87" />
 </p>
-
-
-## PIN Lock + PIN Set Up View
-<p align ="center">
-    <img width="250"  alt="image" src="https://github.com/user-attachments/assets/9fc1eeec-fb81-4368-a91b-0126101aa3ac" />
-    <img width="250" alt="image" src="https://github.com/user-attachments/assets/bbc37d05-f979-411e-8db4-6fd451fba05e" />
-</p>
-
-
-
-
-
-
-
 ---
 
 ## Architecture
