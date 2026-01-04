@@ -67,12 +67,10 @@ Built using **SwiftUI**, **async/await**, **Charts**, and native iOS system APIs
 ---
 
 ## Notifications
-
-The app can notify you when a monitored service transitions to a **Down** or **Error** state.
+- The app can notify you when a monitored service transitions to a **Down** or **Error** state.
 ---
 
 ## Security
-
 - Optional 4-digit PIN lock
 - App locks automatically when backgrounded
 - Local-only storage (no data leaves the device)
