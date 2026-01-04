@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		FE24899E2F0AAD7000CE9287 /* isitup.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = isitup.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		FE24899E2F0AAD7000CE9287 /* isitup.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = isitup.app; path = "/Users/preyashyadav/Desktop/isitup/build/Debug-iphoneos/isitup.app"; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -33,16 +33,7 @@
 			isa = PBXGroup;
 			children = (
 				FE2489A02F0AAD7000CE9287 /* isitup */,
-				FE24899F2F0AAD7000CE9287 /* Products */,
 			);
-			sourceTree = "<group>";
-		};
-		FE24899F2F0AAD7000CE9287 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				FE24899E2F0AAD7000CE9287 /* isitup.app */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -95,7 +86,7 @@
 			mainGroup = FE2489952F0AAD7000CE9287;
 			minimizedProjectReferenceProxies = 1;
 			preferredProjectObjectVersion = 77;
-			productRefGroup = FE24899F2F0AAD7000CE9287 /* Products */;
+			productRefGroup = FE2489952F0AAD7000CE9287;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
