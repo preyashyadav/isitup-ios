@@ -40,6 +40,9 @@ struct RootView: View {
       //  active again, sync state from the store
       unlocked = PinStore.shared.isUnlocked()
     }
+    .onReceive(NotificationCenter.default.publisher(for: NotificationManager.checkNowRequestedNotification)) { _ in
+      Task { await vm.checkAll() }
+    }
   }
 
   private var shouldShowMainApp: Bool {
@@ -62,4 +65,3 @@ struct RootView: View {
 #Preview {
   RootView(useMock: true)
 }
-

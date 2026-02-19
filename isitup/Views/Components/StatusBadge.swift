@@ -25,6 +25,7 @@ struct StatusBadge: View {
     case .unknown: return "UNKNOWN"
     case .checking: return "CHECKING"
     case .healthy: return "HEALTHY"
+    case .degrading: return "DEGRADING"
     case .down: return "DOWN"
     case .error: return "ERROR"
     }
@@ -35,6 +36,7 @@ struct StatusBadge: View {
     case .unknown: return .gray.opacity(0.25)
     case .checking: return .blue.opacity(0.25)
     case .healthy: return .green.opacity(0.25)
+    case .degrading: return .yellow.opacity(0.30)
     case .down: return .red.opacity(0.25)
     case .error: return .orange.opacity(0.25)
     }

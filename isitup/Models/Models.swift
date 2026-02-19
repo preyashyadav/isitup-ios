@@ -11,6 +11,7 @@ enum HealthState: String, Codable {
   case unknown
   case checking
   case healthy
+  case degrading
   case down
   case error
 }
@@ -34,7 +35,7 @@ struct ServiceStatus: Identifiable, Hashable {
   var state: HealthState
   var lastCheckedAt: Date?
   var message: String?
-    var samples: [CheckSample] = []
+  var samples: [CheckSample] = []
 
 
   var lastCheckedLabel: String {
@@ -46,17 +47,39 @@ struct ServiceStatus: Identifiable, Hashable {
   }
 }
 
-struct ServiceConfig: Codable, Hashable {
+struct ServiceConfig: Codable, Hashable, Identifiable {
+  var id: String
   var name: String
   var url: String
+
+  init(id: String = UUID().uuidString, name: String, url: String) {
+    self.id = id
+    self.name = name
+    self.url = url
+  }
+
+  enum CodingKeys: String, CodingKey {
+    case id
+    case name
+    case url
+  }
+
+  init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+    self.id = try container.decodeIfPresent(String.self, forKey: .id) ?? UUID().uuidString
+    self.name = try container.decode(String.self, forKey: .name)
+    self.url = try container.decode(String.self, forKey: .url)
+  }
 }
 
-struct CheckSample: Identifiable, Hashable {
-  let id = UUID()
+struct CheckSample: Identifiable, Hashable, Codable {
+  var id: UUID = UUID()
   let at: Date
   let state: HealthState
   let statusCode: Int?
+  let responseTimeMs: Int?
   let message: String?
+  var isSimulated: Bool? = nil
 }
 
 
@@ -81,4 +104,3 @@ enum HealthCheckError: Error, LocalizedError {
     }
   }
 }
-

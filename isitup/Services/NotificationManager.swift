@@ -10,17 +10,26 @@ import UserNotifications
 
 final class NotificationManager {
   static let shared = NotificationManager()
-  private init() {}
+
+  static let checkNowActionIdentifier = "CHECK_NOW"
+  static let checkNowRequestedNotification = Notification.Name("isitup.notification.checkNowRequested")
+
+  private init() {
+    loadPersistedCooldowns()
+  }
 
   // MARK: - Config
 
   private let downCategoryId = "SERVICE_DOWN"
+  private let groupOutageCategoryId = "GROUP_OUTAGE"
   private let openAppActionId = "OPEN_APP"
+  private let checkNowActionId = NotificationManager.checkNowActionIdentifier
 
   /// avoid notif spam
   private let cooldownSeconds: TimeInterval = 60
 
   private var lastNotified: [String: Date] = [:]
+  private let lastNotifiedPrefix = "isitup.lastNotified."
 
   // MARK: - Public
 
@@ -32,14 +41,27 @@ final class NotificationManager {
       options: [.foreground]
     )
 
-    let category = UNNotificationCategory(
+    let checkNowAction = UNNotificationAction(
+      identifier: checkNowActionId,
+      title: "Check Now",
+      options: [.foreground]
+    )
+
+    let downCategory = UNNotificationCategory(
       identifier: downCategoryId,
       actions: [openAction],
       intentIdentifiers: [],
       options: []
     )
 
-    UNUserNotificationCenter.current().setNotificationCategories([category])
+    let groupedCategory = UNNotificationCategory(
+      identifier: groupOutageCategoryId,
+      actions: [checkNowAction, openAction],
+      intentIdentifiers: [],
+      options: []
+    )
+
+    UNUserNotificationCenter.current().setNotificationCategories([downCategory, groupedCategory])
   }
 
   func requestAuthorizationIfNeeded() async -> Bool {
@@ -62,28 +84,90 @@ final class NotificationManager {
     }
   }
 
-  func notifyServiceDown(name: String, url: String, detail: String?) async {
-    // TODO: avoid repeat notifications in a short window
-    let key = "\(name)|\(url)"
+  func notifyServiceDown(serviceID: String, name: String, url: String, detail: String?) async {
+    await notify(
+      cooldownKey: serviceID,
+      requestIDPrefix: "down",
+      title: "Service down: \(name)",
+      bodyParts: [url, detail]
+    )
+  }
+
+  func notifyServiceDegrading(serviceID: String, name: String, url: String, detail: String?) async {
+    await notify(
+      cooldownKey: "\(serviceID).degrading",
+      requestIDPrefix: "degrading",
+      title: "Service degrading: \(name)",
+      bodyParts: [url, detail]
+    )
+  }
+
+  func notifyGroupedOutage(serviceNames: [String]) async {
+    let normalized = serviceNames
+      .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+      .filter { !$0.isEmpty }
+
+    guard !normalized.isEmpty else { return }
+
+    let previewNames = normalized.prefix(4).joined(separator: ", ")
+    let extra = normalized.count > 4 ? ", +\(normalized.count - 4) more" : ""
+    let body = "Possible outage - \(normalized.count) services affected: \(previewNames)\(extra)"
+
+    await notify(
+      cooldownKey: "groupedOutage",
+      requestIDPrefix: "grouped",
+      title: "Possible outage",
+      bodyParts: [body],
+      categoryIdentifier: groupOutageCategoryId
+    )
+  }
+
+  func notifyGroupedDegrading(serviceNames: [String]) async {
+    let normalized = serviceNames
+      .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+      .filter { !$0.isEmpty }
+
+    guard !normalized.isEmpty else { return }
+
+    let previewNames = normalized.prefix(4).joined(separator: ", ")
+    let extra = normalized.count > 4 ? ", +\(normalized.count - 4) more" : ""
+    let body = "Latency issues - \(normalized.count) services degrading: \(previewNames)\(extra)"
+
+    await notify(
+      cooldownKey: "groupedDegrading",
+      requestIDPrefix: "groupedDegrading",
+      title: "Performance degrading",
+      bodyParts: [body],
+      categoryIdentifier: groupOutageCategoryId
+    )
+  }
+
+  private func notify(
+    cooldownKey: String,
+    requestIDPrefix: String,
+    title: String,
+    bodyParts: [String?],
+    categoryIdentifier: String? = nil
+  ) async {
     let now = Date()
-    if let last = lastNotified[key], now.timeIntervalSince(last) < cooldownSeconds {
+    if let last = lastNotified[cooldownKey], now.timeIntervalSince(last) < cooldownSeconds {
       return
     }
-    lastNotified[key] = now
+    lastNotified[cooldownKey] = now
+    persistCooldown(date: now, for: cooldownKey)
 
     let ok = await requestAuthorizationIfNeeded()
     guard ok else { return }
 
     let content = UNMutableNotificationContent()
-    content.title = "Service down: \(name)"
-    content.body = [url, detail].compactMap { $0 }.joined(separator: " • ")
+    content.title = title
+    content.body = bodyParts.compactMap { $0 }.joined(separator: " • ")
     content.sound = .default
-    content.categoryIdentifier = downCategoryId
+    content.categoryIdentifier = categoryIdentifier ?? downCategoryId
 
-    // fire immediately
     let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
     let req = UNNotificationRequest(
-      identifier: "down.\(name).\(UUID().uuidString)",
+      identifier: "\(requestIDPrefix).\(UUID().uuidString)",
       content: content,
       trigger: trigger
     )
@@ -94,5 +178,24 @@ final class NotificationManager {
       // ignore
     }
   }
-}
 
+  private func loadPersistedCooldowns() {
+    let all = UserDefaults.standard.dictionaryRepresentation()
+
+    for (key, value) in all where key.hasPrefix(lastNotifiedPrefix) {
+      let serviceID = String(key.dropFirst(lastNotifiedPrefix.count))
+      if serviceID.isEmpty { continue }
+
+      if let seconds = value as? TimeInterval {
+        lastNotified[serviceID] = Date(timeIntervalSince1970: seconds)
+      } else if let date = value as? Date {
+        lastNotified[serviceID] = date
+      }
+    }
+  }
+
+  private func persistCooldown(date: Date, for serviceID: String) {
+    let key = "\(lastNotifiedPrefix)\(serviceID)"
+    UserDefaults.standard.set(date.timeIntervalSince1970, forKey: key)
+  }
+}

@@ -21,6 +21,7 @@ struct DashboardView: View {
     let s = vm.summary
     return [
       BarPoint(label: "Healthy", value: s.healthy),
+      BarPoint(label: "Degrading", value: s.degrading),
       BarPoint(label: "Down", value: s.down),
       BarPoint(label: "Error", value: s.error),
       BarPoint(label: "Checking", value: s.checking),
@@ -73,4 +74,3 @@ struct DashboardView: View {
     .padding(.top, 6)
   }
 }
-

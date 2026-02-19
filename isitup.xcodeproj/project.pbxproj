@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		FE24899E2F0AAD7000CE9287 /* isitup.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = isitup.app; path = "/Users/preyashyadav/Desktop/isitup/build/Debug-iphoneos/isitup.app"; sourceTree = "<absolute>"; };
+		FEBB2F092F47674300D2DF3B /* isitup.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = isitup.app; path = "/Users/preyashyadav/Desktop/isitup/build/Debug-iphoneos/isitup.app"; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -58,7 +58,7 @@
 			packageProductDependencies = (
 			);
 			productName = isitup;
-			productReference = FE24899E2F0AAD7000CE9287 /* isitup.app */;
+			productReference = FEBB2F092F47674300D2DF3B /* isitup.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */

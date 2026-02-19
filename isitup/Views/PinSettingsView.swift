@@ -32,6 +32,8 @@ struct PinSettingsView: View {
             SecureField("4-digit PIN", text: $currentPin)
               .keyboardType(.numberPad)
               .textContentType(.oneTimeCode)
+              .textInputAutocapitalization(.never)
+              .autocorrectionDisabled()
               .onChange(of: currentPin) { _, v in currentPin = sanitize(v) }
           }
         }
@@ -41,11 +43,15 @@ struct PinSettingsView: View {
             SecureField("New 4-digit PIN", text: $newPin)
               .keyboardType(.numberPad)
               .textContentType(.oneTimeCode)
+              .textInputAutocapitalization(.never)
+              .autocorrectionDisabled()
               .onChange(of: newPin) { _, v in newPin = sanitize(v) }
 
             SecureField("Confirm new PIN", text: $confirmPin)
               .keyboardType(.numberPad)
               .textContentType(.oneTimeCode)
+              .textInputAutocapitalization(.never)
+              .autocorrectionDisabled()
               .onChange(of: confirmPin) { _, v in confirmPin = sanitize(v) }
           }
         }
@@ -149,4 +155,3 @@ struct PinSettingsView: View {
     String(s.filter { $0.isNumber }.prefix(4))
   }
 }
-

@@ -23,6 +23,8 @@ struct PinLockView: View {
       SecureField("4-digit PIN", text: $pinInput)
         .keyboardType(.numberPad)
         .textContentType(.oneTimeCode)
+        .textInputAutocapitalization(.never)
+        .autocorrectionDisabled()
         .multilineTextAlignment(.center)
         .font(.title2)
         .frame(width: 180)
@@ -74,4 +76,3 @@ struct PinLockView: View {
 #Preview {
   PinLockView(onUnlock: {})
 }
-

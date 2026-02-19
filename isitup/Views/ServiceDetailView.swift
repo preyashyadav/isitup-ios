@@ -41,6 +41,16 @@ struct ServiceDetailView: View {
               .foregroundStyle(.secondary)
           }
 
+          VStack(alignment: .leading, spacing: 8) {
+            Text("Latency Samples").font(.headline)
+            Text("Healthy samples: \(healthyLatencySamplesCount(for: s))")
+              .foregroundStyle(.secondary)
+            Text("Non-simulated baseline: \(nonSimulatedHealthySamplesCount(for: s))")
+              .foregroundStyle(.secondary)
+            Text("Latest latency: \(latestLatencyLabel(for: s))")
+              .foregroundStyle(.secondary)
+          }
+
           if let msg = s.message, !msg.isEmpty {
             VStack(alignment: .leading, spacing: 8) {
               Text("Message").font(.headline)
@@ -69,5 +79,24 @@ struct ServiceDetailView: View {
     }
     .navigationTitle("Details")
     .navigationBarTitleDisplayMode(.inline)
+  }
+
+  private func healthyLatencySamplesCount(for service: ServiceStatus) -> Int {
+    service.samples.filter { ($0.state == .healthy || $0.state == .degrading) && $0.responseTimeMs != nil }.count
+  }
+
+  private func nonSimulatedHealthySamplesCount(for service: ServiceStatus) -> Int {
+    service.samples.filter {
+      ($0.state == .healthy || $0.state == .degrading)
+      && $0.responseTimeMs != nil
+      && $0.isSimulated != true
+    }.count
+  }
+
+  private func latestLatencyLabel(for service: ServiceStatus) -> String {
+    guard let latest = service.samples.compactMap(\.responseTimeMs).last else {
+      return "—"
+    }
+    return "\(latest) ms"
   }
 }

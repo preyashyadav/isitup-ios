@@ -52,6 +52,7 @@ struct ServiceEditorSheet: View {
             }
 
             let updated = ServiceConfig(
+              id: config.id,
               name: trimmedName.isEmpty ? "Untitled" : trimmedName,
               url: trimmedURL
             )
@@ -61,10 +62,17 @@ struct ServiceEditorSheet: View {
         }
       }
       .onAppear {
-        name = config.name
-        url = config.url
+        syncFromConfig()
+      }
+      .onChange(of: config) { _, _ in
+        syncFromConfig()
       }
     }
+  }
+
+  private func syncFromConfig() {
+    name = config.name
+    url = config.url
   }
 
   private func isValidURL(_ s: String) -> Bool {

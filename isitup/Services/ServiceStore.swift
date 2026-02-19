@@ -14,14 +14,18 @@ final class ServiceStore {
   private let userDefaultsKey = "isitup.services.config"
 
   func loadConfigs() -> [ServiceConfig] {
-    //Try UserDefaults first
+    // Try UserDefaults first.
     if let data = UserDefaults.standard.data(forKey: userDefaultsKey),
        let saved = try? JSONDecoder().decode([ServiceConfig].self, from: data),
        !saved.isEmpty {
-      return saved
+      let normalized = normalizeIDs(in: saved)
+      if normalized != saved {
+        saveConfigs(normalized)
+      }
+      return normalized
     }
 
-    //  else fall back to bundled
+    // Else fall back to bundled and persist a normalized copy.
     guard let url = Bundle.main.url(forResource: "services", withExtension: "json"),
           let data = try? Data(contentsOf: url),
           let bundled = try? JSONDecoder().decode([ServiceConfig].self, from: data),
@@ -30,7 +34,9 @@ final class ServiceStore {
       return []
     }
 
-    return bundled
+    let normalized = normalizeIDs(in: bundled)
+    saveConfigs(normalized)
+    return normalized
   }
 
   func saveConfigs(_ configs: [ServiceConfig]) {
@@ -41,5 +47,24 @@ final class ServiceStore {
   func resetToBundled() -> [ServiceConfig] {
     UserDefaults.standard.removeObject(forKey: userDefaultsKey)
     return loadConfigs()
+  }
+
+  private func normalizeIDs(in configs: [ServiceConfig]) -> [ServiceConfig] {
+    var seen = Set<String>()
+
+    return configs.map { cfg in
+      var normalized = cfg
+      let trimmed = normalized.id.trimmingCharacters(in: .whitespacesAndNewlines)
+      let validAndUnique = UUID(uuidString: trimmed) != nil && !seen.contains(trimmed)
+
+      if validAndUnique {
+        normalized.id = trimmed
+      } else {
+        normalized.id = UUID().uuidString
+      }
+
+      seen.insert(normalized.id)
+      return normalized
+    }
   }
 }

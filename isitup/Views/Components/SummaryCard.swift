@@ -16,12 +16,18 @@ struct SummaryCard: View {
       Text("Overview")
         .font(.headline)
 
-      HStack(spacing: 12) {
+      LazyVGrid(
+        columns: [GridItem(.adaptive(minimum: 88), spacing: 10)],
+        alignment: .leading,
+        spacing: 10
+      ) {
         SummaryPill(label: "Total", value: summary.total)
         SummaryPill(label: "Healthy", value: summary.healthy)
+        SummaryPill(label: "Degrading", value: summary.degrading)
         SummaryPill(label: "Down", value: summary.down)
         SummaryPill(label: "Error", value: summary.error)
       }
+      .frame(maxWidth: .infinity, alignment: .leading)
     }
     .padding()
     .background(.thinMaterial)
@@ -38,9 +44,13 @@ struct SummaryPill: View {
   var body: some View {
     VStack(spacing: 4) {
       Text("\(value)").font(.headline)
-      Text(label).font(.caption).foregroundStyle(.secondary)
+      Text(label)
+        .font(.caption)
+        .foregroundStyle(.secondary)
+        .lineLimit(1)
+        .minimumScaleFactor(0.8)
     }
-    .frame(minWidth: 62)
+    .frame(maxWidth: .infinity)
     .padding(.vertical, 8)
     .padding(.horizontal, 10)
     .background(Color.gray.opacity(0.12))

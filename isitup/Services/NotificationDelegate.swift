@@ -17,5 +17,15 @@ final class NotificationDelegate: NSObject, UNUserNotificationCenterDelegate {
     // banner + sound (app open)
     completionHandler([.banner, .sound])
   }
-}
 
+  func userNotificationCenter(
+    _ center: UNUserNotificationCenter,
+    didReceive response: UNNotificationResponse,
+    withCompletionHandler completionHandler: @escaping () -> Void
+  ) {
+    if response.actionIdentifier == NotificationManager.checkNowActionIdentifier {
+      NotificationCenter.default.post(name: NotificationManager.checkNowRequestedNotification, object: nil)
+    }
+    completionHandler()
+  }
+}
