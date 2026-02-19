@@ -1,24 +1,5 @@
 # isitup
 
-`isitup` is a SwiftUI iOS app that monitors your HTTP endpoints and shows their current health status in real time.
-
-## What It Does
-
-- Tracks multiple services from a configurable list
-- Runs health checks and shows status (`Healthy`, `Degrading`, `Down`, `Error`)
-- Stores check history and latency samples
-- Sends local notifications for failures and degrading performance
-- Supports Siri/Shortcuts intents for quick status checks
-- Generates an on-device daily digest (when Apple Intelligence is available)
-
-## Tech Stack
-
-- Swift + SwiftUI
-- App Intents (Siri/Shortcuts)
-- UserNotifications
-- Keychain (PIN security)
-- FoundationModels (Apple Intelligence digest, iOS 26+)
-
 ## Screenshots
 
 <p align="center">
@@ -33,13 +14,39 @@
   <img src="https://github.com/user-attachments/assets/7c951422-5c19-4ccf-b3e7-9ddeb719bc6a" width="180" />
 </p>
 
+`isitup` is a SwiftUI iOS app that monitors your HTTP endpoints and shows their current health status in real time.
 
+## What It Does
 
+- Monitors multiple configured services from one dashboard
+- Runs endpoint checks and shows state: `Healthy`, `Degrading`, `Down`, `Error`
+- Persists per-service history (status + latency samples)
+- Sends smart local notifications (individual + grouped)
+- Supports Siri/Shortcuts service checks
+- Generates an on-device Daily Digest when Apple Intelligence is available
 
+## Baseline Technical Overview
 
-## Run
+- **Architecture:** SwiftUI + `HealthViewModel` (`@MainActor`) as the app orchestration layer
+- **Networking:** `URLSession` with `HEAD` request and `GET` fallback (5s timeout)
+- **Persistence:**
+  - Service config in `UserDefaults`
+  - Sample history in JSON file (Documents directory)
+  - PIN in Keychain (`Security` framework)
+- **Detection:** Statistical anomaly detection on response-time history to classify `Degrading`
+- **Notifications:** `UserNotifications` with cooldown tracking and grouped outage alerts
+- **Siri/Shortcuts:** `AppIntents` for “check all services” and “check single service”
+- **On-device AI:** `FoundationModels` daily summary generation (iOS 26+ supported devices)
+
+## Setup
 
 1. Open `isitup.xcodeproj` in Xcode.
 2. Select the `isitup` scheme.
-3. Run on an iOS Simulator or device.
+3. Run on an iOS Simulator or a physical iPhone.
+4. On first launch, allow notifications if you want outage/degrading alerts.
+5. (Optional) Add Siri shortcuts from the app for voice checks.
 
+## Notes
+
+- Daily Digest appears only on devices where Apple Intelligence is available.
+- Service status depends on real endpoint reachability from the running device/simulator.
