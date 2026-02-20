@@ -1,5 +1,14 @@
 # isitup
+`isitup` is a SwiftUI iOS app that monitors your HTTP endpoints and shows their current health status in real time.
 
+## What It Does
+
+- Monitors multiple configured services from one dashboard
+- Runs endpoint checks and shows state: `Healthy`, `Degrading`, `Down`, `Error`
+- Persists per-service history (status + latency samples)
+- Sends smart local notifications (individual + grouped)
+- Supports Siri/Shortcuts service checks
+- Generates an on-device Daily Digest when Apple Intelligence is available
 ## Screenshots
 
 <p align="center">
@@ -14,16 +23,7 @@
   <img src="https://github.com/user-attachments/assets/7c951422-5c19-4ccf-b3e7-9ddeb719bc6a" width="180" />
 </p>
 
-`isitup` is a SwiftUI iOS app that monitors your HTTP endpoints and shows their current health status in real time.
 
-## What It Does
-
-- Monitors multiple configured services from one dashboard
-- Runs endpoint checks and shows state: `Healthy`, `Degrading`, `Down`, `Error`
-- Persists per-service history (status + latency samples)
-- Sends smart local notifications (individual + grouped)
-- Supports Siri/Shortcuts service checks
-- Generates an on-device Daily Digest when Apple Intelligence is available
 
 ## Baseline Technical Overview
 
